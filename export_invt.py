@@ -162,12 +162,14 @@ def exportSummaryList(token, billNo):
     exportDir = 'export'
     fileName = "{}_{}_summary_list.txt".format(billNo, now.strftime('%Y%m%d%H%M%S'))
 
-    companyCode = redisConn.get(token).decode()
+    companyCode = redisConn.get(token)
 
     if companyCode is None:
         with open(os.path.join(exportDir, fileName), 'w', encoding='utf-8') as f:
             f.write('token不存在，请联系管理员，申请开通')
         return send_from_directory(exportDir, fileName, as_attachment=True)
+
+    companyCode = companyCode.decode()
 
     sql = '''
     select t.invt_no
